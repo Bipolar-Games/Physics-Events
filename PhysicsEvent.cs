@@ -3,12 +3,12 @@ using UnityEngine.Events;
 
 namespace Bipolar.PhysicsEvents
 {
-	public abstract class PhysicsEventBase<T> : MonoBehaviour 
+    public abstract class PhysicsEventBase<T> : MonoBehaviour
         where T : class
     {
         public delegate void PhysicsEventHandler(T collision);
 
-        public event PhysicsEventHandler Happened;
+        private event PhysicsEventHandler invokedActions;
 
 #if NAUGHTY_ATTRIBUTES
 		[NaughtyAttributes.Tag]
@@ -20,10 +20,19 @@ namespace Bipolar.PhysicsEvents
         [Space, SerializeField]
         private UnityEvent onEventHappen = new UnityEvent();
 
+        public void AddListener(PhysicsEventHandler action)
+        {
+            invokedActions += action;
+        }
+
+        public void RemoveListener(PhysicsEventHandler action)
+        {
+            invokedActions -= action;
+        }
+
         public void Clear()
         {
-            onEventHappen.RemoveAllListeners();
-			Happened = null;
+			invokedActions = null;
         }
 
 		protected abstract GameObject GetGameObject(T data);
@@ -31,7 +40,7 @@ namespace Bipolar.PhysicsEvents
 		protected void InvokeEvents(T data)
         {
             onEventHappen.Invoke();
-            Happened?.Invoke(data);
+            invokedActions?.Invoke(data);
         }
 
         protected bool CompareTag(GameObject other)
