@@ -2,7 +2,7 @@
 
 namespace Bipolar.PhysicsEvents
 {
-	public class ControllerCollisionEvent : CollisionEvent<ControllerColliderHit>
+	public class CharacterControllerHitEvent : CollisionEvent<ControllerColliderHit>
 	{
 		protected override GameObject GetGameObject(ControllerColliderHit data) => data.gameObject;
 
